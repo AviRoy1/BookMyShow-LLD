@@ -1,8 +1,8 @@
 package com.example.BMS.BookMyShow.Design.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,10 +11,15 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class City extends BaseModel{
+public class Theatre extends BaseModel{
 
     private String name;
+    private String address;
 
-    @OneToMany(mappedBy = "city")
-    private List<Theatre> theatres;
+    @ManyToOne
+    private City city;
+
+    @OneToMany(mappedBy = "theatre")
+    List<Auditorium> auditoriums;
+
 }
