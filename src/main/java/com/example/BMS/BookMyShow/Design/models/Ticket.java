@@ -1,6 +1,8 @@
 package com.example.BMS.BookMyShow.Design.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,5 +26,6 @@ public class Ticket extends BaseModel{
     @ManyToOne
     private ShowSeat seat;
 
+    @Enumerated(EnumType.STRING)
     private TicketStatus status;
 }
