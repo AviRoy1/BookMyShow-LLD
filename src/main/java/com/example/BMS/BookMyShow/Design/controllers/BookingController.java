@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/bookings")
 public class BookingController {
 
-    private IBookingService bookingService;
+    private final IBookingService bookingService;
 
     public BookingController(IBookingService bookingService) {
         this.bookingService = bookingService;

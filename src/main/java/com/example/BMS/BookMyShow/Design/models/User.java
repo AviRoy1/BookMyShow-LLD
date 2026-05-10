@@ -1,6 +1,7 @@
 package com.example.BMS.BookMyShow.Design.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,6 @@ public class User extends BaseModel{
 
     private String email;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Ticket> tickets;
 }

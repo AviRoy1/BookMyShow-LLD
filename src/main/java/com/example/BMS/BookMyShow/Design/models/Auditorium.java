@@ -1,12 +1,12 @@
 package com.example.BMS.BookMyShow.Design.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
 
 @Getter
 @Setter
@@ -14,14 +14,17 @@ import java.util.List;
 public class Auditorium extends BaseModel {
 
     private String name;
+
     private Integer capacity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "theatre_id")
+    @JsonIgnore
     private Theatre theatre;
 
-    @OneToMany(mappedBy = "auditorium")
+    @OneToMany(mappedBy = "auditorium", fetch = FetchType.LAZY)
     private List<Seat> seats;
 
-    @OneToMany(mappedBy = "auditorium")
+    @OneToMany(mappedBy = "auditorium", fetch = FetchType.LAZY)
     private List<Show> shows;
 }

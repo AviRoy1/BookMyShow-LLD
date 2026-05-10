@@ -16,16 +16,16 @@ import java.util.Optional;
 @Service
 public class RedisBookingServiceImpl implements IBookingService {
 
-    private final ICacheService cacheService;
-    private final ShowSeatRepository showSeatRepository;
+    @Autowired
+    private ICacheService cacheService;
 
-    public RedisBookingServiceImpl(ShowSeatRepository showSeatRepository) {
-        this.cacheService = new RedisServiceImpl();
-        this.showSeatRepository = showSeatRepository;
-    }
+    @Autowired
+    private ShowSeatRepository showSeatRepository;
 
     @Override
     public boolean blockSeats(long showId, List<Long> seatIds, long userId) {
+        System.out.println("Printing cache before logic");
+        cacheService.getAllKeysAndValues();
 
         // 1. Check if the seats are available or not.
 
@@ -39,7 +39,7 @@ public class RedisBookingServiceImpl implements IBookingService {
 
         // b. Check if the seats are not locked already.
         for(ShowSeat seat: showSeats) {
-            String status = cacheService.get("seatId-"+seat.getId()+"-userId-"+userId).toString();
+            String status = (String) cacheService.get("seatId-"+seat.getId()+"-userId-"+userId);
             if(status != null)
                 return false;
         }
@@ -51,7 +51,7 @@ public class RedisBookingServiceImpl implements IBookingService {
 
         System.out.println("Printing cache after logic");
         cacheService.getAllKeysAndValues();
-        return false;
+        return true;
     }
 
     @Override

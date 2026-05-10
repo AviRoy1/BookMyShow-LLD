@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 public class RedisServiceImpl implements ICacheService {
 
@@ -14,7 +16,7 @@ public class RedisServiceImpl implements ICacheService {
 
     @Override
     public void set(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value.toString());
+        redisTemplate.opsForValue().set(key, value.toString(), 1, TimeUnit.MINUTES);
     }
 
     @Override

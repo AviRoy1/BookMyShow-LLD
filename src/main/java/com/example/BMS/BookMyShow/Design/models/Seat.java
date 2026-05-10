@@ -1,16 +1,14 @@
 package com.example.BMS.BookMyShow.Design.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-public class Seat extends BaseModel{
+public class Seat extends BaseModel {
 
     private String seatNumber;
 
@@ -21,7 +19,8 @@ public class Seat extends BaseModel{
     @Enumerated(EnumType.STRING)
     private SeatType seatType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auditorium_id")
+    @JsonIgnore
     private Auditorium auditorium;
-
 }

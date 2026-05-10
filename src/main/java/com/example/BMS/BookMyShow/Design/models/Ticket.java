@@ -1,30 +1,31 @@
 package com.example.BMS.BookMyShow.Design.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
-
 @Getter
 @Setter
 @Entity
-public class Ticket extends BaseModel{
+public class Ticket extends BaseModel {
 
     private BigDecimal amount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "show_id")
     private Show show;
 
-    @ManyToOne
-    private ShowSeat seat;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "show_seat_id")
+    private ShowSeat showSeat;
 
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
