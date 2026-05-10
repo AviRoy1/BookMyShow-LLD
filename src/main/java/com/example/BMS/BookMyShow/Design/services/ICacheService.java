@@ -12,4 +12,6 @@ public interface ICacheService {
     void delete(String key);
 
     void getAllKeysAndValues();
+
+    void deleteAll();
 }

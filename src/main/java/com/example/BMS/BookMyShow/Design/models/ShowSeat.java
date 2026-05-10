@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @Entity
@@ -21,4 +23,8 @@ public class ShowSeat extends BaseModel {
 
     @Enumerated(EnumType.STRING)
     private ShowSeatStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
 }

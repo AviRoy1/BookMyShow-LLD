@@ -16,7 +16,7 @@ public class RedisServiceImpl implements ICacheService {
 
     @Override
     public void set(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value.toString(), 1, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(key, value.toString(), 2, TimeUnit.MINUTES);
     }
 
     @Override
@@ -34,5 +34,10 @@ public class RedisServiceImpl implements ICacheService {
         redisTemplate.keys("*").forEach(key -> {
             System.out.println("Key: "+key+" Value: "+redisTemplate.opsForValue().get(key));
         });
+    }
+
+    @Override
+    public void deleteAll() {
+        redisTemplate.delete(redisTemplate.keys("*"));
     }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,9 +24,8 @@ public class Ticket extends BaseModel {
     @JoinColumn(name = "show_id")
     private Show show;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "show_seat_id")
-    private ShowSeat showSeat;
+    @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
+    private List<ShowSeat> showSeats;
 
     @Enumerated(EnumType.STRING)
     private TicketStatus status;

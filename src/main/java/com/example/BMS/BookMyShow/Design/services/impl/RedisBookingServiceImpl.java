@@ -56,7 +56,25 @@ public class RedisBookingServiceImpl implements IBookingService {
 
     @Override
     public Optional<Ticket> bookTicket(long showId, List<Long> seatIds, long userId) {
+
+        //  1. In redis check if the user has lock all the seats that they are trying to book
+        for(long seatId: seatIds) {
+            String status = (String) cacheService.get("seatId-"+seatId+"-userId-"+userId);
+            if(null == status){
+                return Optional.empty();
+            }
+        }
+
+
+
+
         return Optional.empty();
+    }
+
+    @Override
+    public boolean clearAllSeatLocks() {
+        cacheService.deleteAll();
+        return true;
     }
 }
 
