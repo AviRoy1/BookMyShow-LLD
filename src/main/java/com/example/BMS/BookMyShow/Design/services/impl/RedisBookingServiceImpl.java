@@ -1,15 +1,18 @@
 package com.example.BMS.BookMyShow.Design.services.impl;
 
-import com.example.BMS.BookMyShow.Design.models.ShowSeat;
-import com.example.BMS.BookMyShow.Design.models.ShowSeatStatus;
-import com.example.BMS.BookMyShow.Design.models.Ticket;
+import com.example.BMS.BookMyShow.Design.models.*;
+import com.example.BMS.BookMyShow.Design.repositories.ShowRepository;
 import com.example.BMS.BookMyShow.Design.repositories.ShowSeatRepository;
+import com.example.BMS.BookMyShow.Design.repositories.TicketRepository;
+import com.example.BMS.BookMyShow.Design.repositories.UserRepository;
 import com.example.BMS.BookMyShow.Design.services.IBookingService;
 import com.example.BMS.BookMyShow.Design.services.ICacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,15 @@ public class RedisBookingServiceImpl implements IBookingService {
 
     @Autowired
     private ShowSeatRepository showSeatRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ShowRepository showRepository;
 
     @Override
     public boolean blockSeats(long showId, List<Long> seatIds, long userId) {
@@ -54,6 +66,7 @@ public class RedisBookingServiceImpl implements IBookingService {
         return true;
     }
 
+    @Transactional
     @Override
     public Optional<Ticket> bookTicket(long showId, List<Long> seatIds, long userId) {
 
@@ -65,16 +78,37 @@ public class RedisBookingServiceImpl implements IBookingService {
             }
         }
 
+        // 2. Create ticket
+        Ticket ticket = createTicket(showId, seatIds, userId);
+
+        // 3. Update show_seat status for all the seats and update ticket id.
+        List<ShowSeat> showSeats = showSeatRepository.findAllBySeatIdAndShowId(seatIds, showId);
+        for(ShowSeat seat: showSeats) {
+            seat.setStatus(ShowSeatStatus.BOOKED);
+            seat.setTicket(ticket);
+        }
+        showSeatRepository.saveAll(showSeats);
 
 
-
-        return Optional.empty();
+        return Optional.of(ticket);
     }
 
     @Override
     public boolean clearAllSeatLocks() {
         cacheService.deleteAll();
         return true;
+    }
+
+    private Ticket createTicket(long showId, List<Long> seatIds, long userId) {
+        Ticket ticket = new Ticket();
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found."));
+        Show show = showRepository.findById(showId).orElseThrow(() -> new RuntimeException("Show not found."));
+        ticket.setUser(user);
+        ticket.setShow(show);
+        ticket.setAmount(BigDecimal.valueOf(2000));
+        ticket.setStatus(TicketStatus.BOOKED);
+        ticket = ticketRepository.save(ticket);
+        return ticket;
     }
 }
 

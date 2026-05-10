@@ -1,6 +1,7 @@
 package com.example.BMS.BookMyShow.Design.controllers;
 
 import com.example.BMS.BookMyShow.Design.dto.BlockSeatsRequestDto;
+import com.example.BMS.BookMyShow.Design.models.Ticket;
 import com.example.BMS.BookMyShow.Design.services.IBookingService;
 import com.example.BMS.BookMyShow.Design.services.impl.RedisBookingServiceImpl;
 import org.springframework.web.bind.annotation.*;
@@ -23,5 +24,10 @@ public class BookingController {
     @DeleteMapping
     public boolean clearAllSeatLocks() {
         return bookingService.clearAllSeatLocks();
+    }
+
+    @PostMapping("/confirm")
+    public Ticket confirmTicket(@RequestBody BlockSeatsRequestDto requestDto) {
+        return bookingService.bookTicket(requestDto.getShowId(), requestDto.getSeatIds(), requestDto.getUserId()).get();
     }
 }
