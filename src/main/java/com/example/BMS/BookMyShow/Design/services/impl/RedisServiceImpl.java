@@ -2,17 +2,18 @@ package com.example.BMS.BookMyShow.Design.services.impl;
 
 import com.example.BMS.BookMyShow.Design.services.ICacheService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class RedisServiceImpl implements ICacheService {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public void save(String key, Object value) {
+    public void set(String key, Object value) {
         redisTemplate.opsForValue().set(key, value.toString());
     }
 
@@ -24,5 +25,12 @@ public class RedisServiceImpl implements ICacheService {
     @Override
     public void delete(String key) {
         redisTemplate.opsForValue().getAndDelete(key);
+    }
+
+    @Override
+    public void getAllKeysAndValues() {
+        redisTemplate.keys("*").forEach(key -> {
+            System.out.println("Key: "+key+" Value: "+redisTemplate.opsForValue().get(key));
+        });
     }
 }
